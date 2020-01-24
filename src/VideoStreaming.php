@@ -50,7 +50,7 @@ class VideoStreaming
         return $this;
     }
 
-    private function setHeaderRangeSatisfiable()
+    private function setHeaderRangeNotSatisfiable()
     {
         header("HTTP/1.1 416 Requested Range Not Satisfiable");
         header("Content-Range: bytes $this->cursorStart-$this->cursorEnd/$this->fileSize");
@@ -64,7 +64,7 @@ class VideoStreaming
         list(, $range) = explode('=', $rangeString, 2);
 
         if (strpos($range, ',') !== false) {
-            $this->setHeaderRangeSatisfiable();
+            $this->setHeaderRangeNotSatisfiable();
         }
 
         if (strpos($range, '-') !== false) {
@@ -75,7 +75,7 @@ class VideoStreaming
 
         $cursorEnd = ($cursorEnd > $this->cursorEnd) ? $this->cursorEnd : $cursorEnd;
         if ($cursorStart > $cursorEnd || $cursorStart > ($this->fileSize - 1) || $cursorEnd >= $this->fileSize) {
-            $this->setHeaderRangeSatisfiable();
+            $this->setHeaderRangeNotSatisfiable();
         }
 
         $this->cursorStart = $cursorStart;
